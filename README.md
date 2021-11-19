@@ -35,8 +35,13 @@ Our code is based on the RetinaNet implementation available at [https://github.c
 
 ## Experiments CityPersons
 
-For preprocessing annotations you need to download the [full annotations](https://bitbucket.org/shanshanzhang/citypersons/src/default/annotations/) and then run `.data/CityPersons_preparation.py`. The output is a pickle file which is used in training.
-Furthermore, you need to download the [validation ground truth](https://bitbucket.org/shanshanzhang/citypersons/src/default/evaluation/) (val_gt.json) as used in the official evaluation code and store it in ./data
+For preprocessing annotations you need to download the [full annotations](https://github.com/cvgroup-njust/CityPersons/tree/master/annotations)
+and then run `.data/CityPersons_preparation.py`. The output is a pickle file
+which is used in training. Furthermore, you need to download the
+[validation ground truth](https://github.com/cvgroup-njust/CityPersons/tree/master/evaluation)
+(val_gt.json) as used in the official evaluation code and store it in ./data.
+Furthermore, you also need to run `.data/CityPersons_preparation.py` for
+generating a pickle for the validation data.
 
 Train images are expected to be stored in `/image_folder/train/city_name/img_name.png`  
 Val images are expected to be stored in `/image_folder/val/city_name/img_name.png`

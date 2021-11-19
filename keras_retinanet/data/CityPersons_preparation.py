@@ -23,18 +23,24 @@ import pickle
 import scipy.io
 
 '''
-Create pickles for CityPersons
-Given the downloaded citypersons annotations (anno_train.mat) generate pickle files with the given subset of annotations.
+Create pickles for CityPersons given the downloaded CityPersons annotations (anno_train.mat and anno_val.mat).
 '''
 
 ##############################################################################################
 # MODIFY THE PATHES BELOW DEPENDING ON WHICH .PICKLE FILE YOU WANT TO CREATE
-###############################################################################################     
-mat = scipy.io.loadmat('./data/shanshanzhang-citypersons-6fdea42bce77/annotations/anno_train.mat')['anno_train_aligned'][0]
-percentage_of_annotations_to_keep = 25   #25 keeps the largest 25% of annotations
-make_remaining_annotations_ignore_regions = False    #Set to true for oracle ignore
-save_path = './data/subset_annotations.pickle'
 ###############################################################################################
+# Train
+mode = 'train'   # train or val
+mat = scipy.io.loadmat('./data/anno_train.mat')['anno_train_aligned'][0]
+percentage_of_annotations_to_keep = 25   #25 keeps the largest 25% of annotations
+make_remaining_annotations_ignore_regions = False   #Set to true for oracle ignore
+save_path = './data/citypersons_largest_' + str(percentage_of_annotations_to_keep) + '_percent.pickle'
+###############################################################################################
+#Validation
+#mode = 'val'
+#mat = scipy.io.loadmat('./data/anno_val.mat')['anno_val_aligned'][0]
+#save_path = './data/cityPersons_val.pickle'
+##############################################################################################
 
 citypersons_classes = {
     'ignored':0,
@@ -130,11 +136,9 @@ def keep_subset_annotations(pickle_file, subset_for_inclusion, make_remaining_an
     return pickle_file
             
    
-#12670 is nb of pedestrians with size > 50
 annotations_pickle = generate_pickle_from_mat (mat)
-scale = find_large_low_occluded_pedestrians(annotations_pickle, nb_of_pedestrian_annotations_to_keep = int(12670 * percentage_of_annotations_to_keep /100))
-reasonable_pedestrians = find_reasonable_pedestrians (annotations_pickle, scale=scale)
-train_clean_subset = keep_subset_annotations(annotations_pickle, reasonable_pedestrians, make_remaining_annotations_ignore_regions=make_remaining_annotations_ignore_regions) 
-save_pickle (train_clean_subset, save_path) 
-
-
+if mode=='train': #12670 is nb of pedestrians with size > 50
+    scale = find_large_low_occluded_pedestrians(annotations_pickle, nb_of_pedestrian_annotations_to_keep = int(12670 * percentage_of_annotations_to_keep /100))
+    reasonable_pedestrians = find_reasonable_pedestrians (annotations_pickle, scale=scale)
+    annotations_pickle = keep_subset_annotations(annotations_pickle, reasonable_pedestrians, make_remaining_annotations_ignore_regions=make_remaining_annotations_ignore_regions)
+save_pickle (annotations_pickle, save_path)
